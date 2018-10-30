@@ -9,6 +9,9 @@ public class GolemTatakiManager : MonoBehaviour
     [SerializeField]
     private List<GameObject> _rocks;
 
+    [SerializeField]
+    private GameObject _target;
+
     [Header("Monsters")]
     [SerializeField]
     private GameObject _golem;
@@ -37,5 +40,6 @@ public class GolemTatakiManager : MonoBehaviour
 
         var golem = Instantiate(_golem, pos, tran);
         golem.GetComponent<IMonster>().IsDead.Where(isDead => isDead).Subscribe(_ => KilledCount.Value += 1);
+        golem.GetComponent<GolemController>().SetTarget(_target);
     }
 }

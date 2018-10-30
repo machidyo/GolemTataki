@@ -82,12 +82,16 @@ public class GolemController : MonoBehaviour, IMonster
         IsDead.Value = true;
         StartCoroutine(AnimateDeath());
     }
-
     private IEnumerator AnimateDeath()
     {
         yield return PlayAnimation("death");
 
         Destroy(gameObject);
+    }
+
+    public void SetTarget(GameObject target)
+    {
+        _target = target;
     }
 
     private void ActionByKey()
