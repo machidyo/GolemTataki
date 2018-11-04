@@ -27,37 +27,47 @@ public class MonsterSlayer : MonoBehaviour
     private Ray _ray;
     private Plane _plane = new Plane();
 
+    private bool isVR = false;
+
     void Start()
     {
         var tm = GetComponentInChildren<RFX4_TransformMotion>(true);
         if (tm != null) tm.CollisionEnter += Tm_CollisionEnter;
 
-        Observable
-            .EveryUpdate()
-            .Where(_ => Input.GetMouseButtonDown(0))
-            .ThrottleFrame(5)
-            .Subscribe(_ => Fire("thunder"));
+        if (isVR)
+        {
+            Observable
+                .EveryUpdate()
+                .Where(_ => SteamVR_Input._default.inActions.InteractUI.GetState(_handType))
+                .ThrottleFrame(5)
+                .Subscribe(_ => Fire("thunder"));
 
-        Observable
-            .EveryUpdate()
-            .Where(_ => SteamVR_Input._default.inActions.InteractUI.GetState(_handType))
-            .ThrottleFrame(5)
-            .Subscribe(_ => Fire("thunder"));
-
-        Observable
-            .EveryUpdate()
-            .Where(_ => _grabAction.GetState(_handType))
-            .ThrottleFrame(5)
-            .Subscribe(_ => Fire("pyramid"));
+            Observable
+                .EveryUpdate()
+                .Where(_ => _grabAction.GetState(_handType))
+                .ThrottleFrame(5)
+                .Subscribe(_ => Fire("pyramid"));
+        }
+        else
+        {
+            Observable
+                .EveryUpdate()
+                .Where(_ => Input.GetMouseButtonDown(0))
+                .ThrottleFrame(5)
+                .Subscribe(_ => Fire("thunder"));
+        }
     }
 
     private void Update()
     {
-        // RotateSlayerWithoutVR();
+        if (!isVR)
+        {
+            RotateSlayerWithoutVR();
+        }
     }
     private void RotateSlayerWithoutVR()
     {
-        _ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        _ray = Camera.main.ScreenPointToRay(Input.mousePosition);   
         _plane.SetNormalAndPosition(Vector3.up, transform.localPosition);
 
         var distance = 0.0f;
@@ -73,8 +83,14 @@ public class MonsterSlayer : MonoBehaviour
         switch (kind)
         {
             case "thunder":
-                // FireWithoutVR(_thunder);
-                Thunder(_thunder);
+                if (isVR)
+                {
+                    Thunder(_thunder);
+                }
+                else
+                {
+                    FireWithoutVR(_thunder);
+                }
                 break;
             case "pyramid":
                 Pyramid(_pyramid);
@@ -86,7 +102,8 @@ public class MonsterSlayer : MonoBehaviour
     private void FireWithoutVR(GameObject magic)
     {
         var pos = new Vector3(transform.position.x, transform.position.y + 0.5f, transform.position.z);
-        var m = Instantiate(magic, pos, transform.rotation);
+        var rot = Quaternion.Euler(transform.rotation.eulerAngles + new Vector3(0, 0, 0));
+        var m = Instantiate(magic, pos, rot);
         var tm = m.GetComponentInChildren<RFX4_TransformMotion>(true);
         if (tm != null)
         {

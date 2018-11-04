@@ -4552,7 +4552,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1403275477945616}
   m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 310.5, y: 108.7, z: -158.92}
+  m_LocalPosition: {x: 553.36, y: 53.2, z: -321.49002}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4399290150377958}
@@ -5553,7 +5553,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50f82bb448ff853429b442a0b1240f96, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _magic: {fileID: 1748139164946814, guid: 4f14e37b24a0f9c41a81220f59ae87f6, type: 2}
+  _handType: 0
+  _grabAction: {fileID: 11400000, guid: 96790e9aa265d2b41b7add23b10deb5d, type: 2}
+  _hand: {fileID: 1403275477945616}
+  _thunder: {fileID: 107500, guid: 0122ae5e9eba47f498fb16cc0c5019a8, type: 2}
+  _pyramid: {fileID: 111372, guid: 87738b5a38cb9d34aaa6cbf49c05e518, type: 2}
 --- !u!114 &114281650804431202
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -6143,7 +6147,7 @@ SkinnedMeshRenderer:
   m_BlendShapeWeights: []
   m_RootBone: {fileID: 4567654650409714}
   m_AABB:
-    m_Center: {x: -0.014678955, y: 0.028839111, z: 0.5849304}
+    m_Center: {x: -0.01467514, y: 0.028869629, z: 0.58483887}
     m_Extent: {x: 0.43654355, y: 0.6946323, z: 0.780858}
   m_DirtyAABB: 0
 --- !u!137 &137337466232263372
