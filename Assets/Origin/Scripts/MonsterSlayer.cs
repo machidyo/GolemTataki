@@ -149,8 +149,9 @@ public class MonsterSlayer : MonoBehaviour
             || e.Hit.transform.name.ToLower().StartsWith("chimera"))
         {
             var direction = e.Hit.transform.position - transform.position;
+            Debug.Log("ふっとばす");
             e.Hit.rigidbody.AddForce(direction.normalized * 600.0f, ForceMode.Force);
-            e.Hit.transform.GetComponent<GolemController>().Death();
+            e.Hit.transform.GetComponent<IMonster>().Death();
         }
     }
 }

@@ -6,9 +6,9 @@ using UniRx;
 
 // todo:
 // * [x] うまく魔法が出ないのでなんとかする
-// * [ ] monster or human に切り替える
-// * [ ] タイミングが異なった場合、killed を　-1 する
+// * [x] monster or human に切り替える
 // * [x] パーティクルがうまくでないことがあるので、解消する
+// * [ ] タイミングが異なった場合、killed を　-1 する
 // * [ ] パーティクルの色を黒と白に変更する
 
 public class GolemTatakiManager : MonoBehaviour
@@ -29,13 +29,13 @@ public class GolemTatakiManager : MonoBehaviour
 
     [Header("Monsters")]
     [SerializeField] private GameObject _golem;
-    [SerializeField] private GameObject _demonLord;
+    [SerializeField] private GameObject _chimera;
 
     public ReactiveProperty<GameStatus> Status { get; private set; }
     public ReactiveProperty<int> TimeCount  { get; private set; }
     public ReactiveProperty<int> KilledCount { get; private set; }
 
-    private int _playTime = 30;
+    private int _playTime = 40;
     private IDisposable _timer;
     private IDisposable _generater;
     private List<GameObject> _monsters = new List<GameObject>();
@@ -101,7 +101,7 @@ public class GolemTatakiManager : MonoBehaviour
             .Interval(TimeSpan.FromMilliseconds(2000))
             .Subscribe(_ => 
             {
-                var monster = (TimeCount.Value / 10) % 2 == 0 ? _golem : _demonLord;
+                var monster = (TimeCount.Value / 10) % 2 == 0 ? _golem : _chimera;
                 GenerateGolem(monster);
             });
     }
