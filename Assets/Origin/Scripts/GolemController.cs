@@ -32,7 +32,7 @@ public class GolemController : MonoBehaviour, IMonster
         if(_isWalking)
         {
             transform.LookAt(_target.transform.position);
-            transform.position = Vector3.Lerp(gameObject.transform.position, _target.transform.position, Time.deltaTime / 10);
+            transform.position = Vector3.Lerp(gameObject.transform.position, _target.transform.position, Time.deltaTime / 3);
         }
     }
 

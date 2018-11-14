@@ -4,6 +4,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UniRx;
 
+// todo:
+// * [x] うまく魔法が出ないのでなんとかする
+// * [ ] monster or human に切り替える
+// * [ ] タイミングが異なった場合、killed を　-1 する
+// * [x] パーティクルがうまくでないことがあるので、解消する
+// * [ ] パーティクルの色を黒と白に変更する
+
 public class GolemTatakiManager : MonoBehaviour
 {
     public enum GameStatus
@@ -21,14 +28,14 @@ public class GolemTatakiManager : MonoBehaviour
     private GameObject _target;
 
     [Header("Monsters")]
-    [SerializeField]
-    private GameObject _golem;
+    [SerializeField] private GameObject _golem;
+    [SerializeField] private GameObject _demonLord;
 
     public ReactiveProperty<GameStatus> Status { get; private set; }
     public ReactiveProperty<int> TimeCount  { get; private set; }
     public ReactiveProperty<int> KilledCount { get; private set; }
 
-    private int _playTime = 10;
+    private int _playTime = 30;
     private IDisposable _timer;
     private IDisposable _generater;
     private List<GameObject> _monsters = new List<GameObject>();
@@ -61,8 +68,9 @@ public class GolemTatakiManager : MonoBehaviour
 
         });
 
-        TimeCount.Subscribe(x => Debug.Log(x));
-        KilledCount.Subscribe(x => Debug.Log(x));
+        // for debug
+        // TimeCount.Subscribe(x => Debug.Log(x));
+        // KilledCount.Subscribe(x => Debug.Log(x));
     }
 
     /// <summary>
@@ -91,17 +99,29 @@ public class GolemTatakiManager : MonoBehaviour
 
         _generater = Observable
             .Interval(TimeSpan.FromMilliseconds(2000))
-            .Subscribe(_ => GenerateGolem());
+            .Subscribe(_ => 
+            {
+                var monster = (TimeCount.Value / 10) % 2 == 0 ? _golem : _demonLord;
+                GenerateGolem(monster);
+            });
     }
-    private void GenerateGolem()
+    private void GenerateGolem(GameObject monster)
     {
         var rand = Mathf.FloorToInt(UnityEngine.Random.Range(0.0f, 4.99f) % 4);
         var pos = _rocks[rand].transform.position;
         var tran = new Quaternion();
 
-        var golem = Instantiate(_golem, pos, tran);
-        golem.GetComponent<IMonster>().IsDead.Where(isDead => isDead).Where(_ => Status.Value != GameStatus.Finished).Subscribe(_ => KilledCount.Value += 1);
-        golem.GetComponent<GolemController>().SetTarget(_target);
+        var golem = Instantiate(monster, pos, tran);
+        golem.GetComponent<IMonster>().SetTarget(_target);
+        golem.GetComponent<IMonster>()
+            .IsDead
+            .Where(isDead => isDead)
+            .Where(_ => Status.Value != GameStatus.Finished)
+            .Subscribe(_ => 
+            {
+                _monsters.Remove(golem);
+                KilledCount.Value += 1;
+            });
         _monsters.Add(golem);
     }
 
@@ -112,7 +132,7 @@ public class GolemTatakiManager : MonoBehaviour
 
         foreach (var m in _monsters)
         {
-            m.GetComponent<IMonster>().Death();
+            m.GetComponent<IMonster>()?.Death();
         }
         _monsters.Clear();
     }

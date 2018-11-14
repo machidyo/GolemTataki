@@ -98,12 +98,12 @@ public class MonsterSlayer : MonoBehaviour
             default:
                 break;
         }
-}
+    }
     private void FireWithoutVR(GameObject magic)
     {
         var pos = new Vector3(transform.position.x, transform.position.y + 0.5f, transform.position.z);
-        var rot = Quaternion.Euler(transform.rotation.eulerAngles + new Vector3(0, 0, 0));
-        var m = Instantiate(magic, pos, rot);
+        // var rot = Quaternion.Euler(transform.rotation.eulerAngles + new Vector3(0, 0, 0));
+        var m = Instantiate(magic, pos, transform.rotation);
         var tm = m.GetComponentInChildren<RFX4_TransformMotion>(true);
         if (tm != null)
         {
@@ -142,7 +142,11 @@ public class MonsterSlayer : MonoBehaviour
 
     private void Tm_CollisionEnter(object sender, RFX4_TransformMotion.RFX4_CollisionInfo e)
     {
-        if (e.Hit.transform.name.ToLower().StartsWith("golem"))
+        Debug.Log("Magic hit a " + e.Hit.transform.name);
+
+        // todo: IMonster とか tag とかで分けたい
+        if (e.Hit.transform.name.ToLower().StartsWith("golem")
+            || e.Hit.transform.name.ToLower().StartsWith("chimera"))
         {
             var direction = e.Hit.transform.position - transform.position;
             e.Hit.rigidbody.AddForce(direction.normalized * 600.0f, ForceMode.Force);

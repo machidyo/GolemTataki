@@ -10,4 +10,6 @@ public interface IMonster
     IEnumerator Walk();
     IEnumerator Attack();
     void Death();
+
+    void SetTarget(GameObject target);
 }
