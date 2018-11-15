@@ -92,4 +92,12 @@ public class ScreenController : MonoBehaviour
                 }
             });
     }
+
+    // http://inter-high-blog.unity3d.jp/2017/08/22/resolutionchange/
+    // 画面サイズが前回実行時を覚えている多ときに初期設定が効かないクソ仕様対応
+    [RuntimeInitializeOnLoadMethod]
+    static void OnRuntimeMethodLoad()
+    {
+        Screen.SetResolution(1365, 768, false);
+    }
 }
